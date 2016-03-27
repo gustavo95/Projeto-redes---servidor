@@ -28,8 +28,9 @@ public class ClientThread implements Runnable {
 
 			clientSentence = inFromClient.readLine();
 			capitalizedSentence = clientSentence.toUpperCase() + '\n';
-
-			outToClient.writeBytes(capitalizedSentence);
+			System.out.println(clientSentence);
+			System.out.println(capitalizedSentence);
+			//outToClient.writeBytes(capitalizedSentence);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
