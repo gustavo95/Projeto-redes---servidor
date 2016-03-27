@@ -12,7 +12,7 @@ public class Server {
 		ServerSocket welcomeSocket = new ServerSocket(6789);
 
 		while (true) {
-
+				//nanna
 			Socket connectionSocket = welcomeSocket.accept();
 			System.out.println("Conexão estabelecida com o cliente");
 			Thread t = new Thread(new ClientThread(connectionSocket));
