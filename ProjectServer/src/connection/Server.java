@@ -9,7 +9,8 @@ public class Server {
 	public static void main(String argv[]) throws Exception {
 
 		System.out.println("SERVIDOR INICIOU, ESPERANDO CONEXÃO NA PORTA 6789!");
-		 ArrayList<RequisitionServer> list_of_requisitions  = new ArrayList<RequisitionServer>();
+		ArrayList<RequisitionServer> list_of_requisitions  = new ArrayList<RequisitionServer>();
+		@SuppressWarnings("resource")
 		ServerSocket welcomeSocket = new ServerSocket(6789);
 
 		while (true) {
