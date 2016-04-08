@@ -2,10 +2,15 @@ package fileManagement;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 public class FileOperations {
@@ -57,4 +62,37 @@ public class FileOperations {
 		return location.split("\\\\")[i];
 	}
 	
+	public byte[] serializeFile(FileToTransfer file){
+		try {
+			ByteArrayOutputStream bao = new ByteArrayOutputStream();
+			
+			ObjectOutputStream ous;
+			ous = new ObjectOutputStream(bao);
+			ous.writeObject(file);
+			
+			return bao.toByteArray();
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+				}
+		return null;
+	}
+	
+	public FileToTransfer getFileFromByte(byte[] objectAsByte) {
+		FileToTransfer file = null;
+		ByteArrayInputStream bis = null;
+		ObjectInputStream ois = null;
+		try {
+			bis = new ByteArrayInputStream(objectAsByte);
+			ois = new ObjectInputStream(bis);
+			file = (FileToTransfer) ois.readObject();
+			bis.close();
+			ois.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} return file;
+	}
+
 }
