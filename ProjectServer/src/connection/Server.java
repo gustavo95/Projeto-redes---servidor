@@ -12,12 +12,13 @@ public class Server {
 		ArrayList<RequisitionServer> list_of_requisitions  = new ArrayList<RequisitionServer>();
 		@SuppressWarnings("resource")
 		ServerSocket welcomeSocket = new ServerSocket(6789);
+		ServerSocket dataSocket = new ServerSocket(6790);;
 
 		while (true) {
 			
 			Socket connectionSocket = welcomeSocket.accept();
 			System.out.println("Conexão estabelecida com o cliente");
-			Thread t = new Thread(new ClientThread(connectionSocket, list_of_requisitions));
+			Thread t = new Thread(new ClientThread(connectionSocket, dataSocket, list_of_requisitions));
 			t.start();
 		}
 	}
