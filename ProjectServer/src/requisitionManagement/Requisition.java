@@ -1,18 +1,22 @@
 package requisitionManagement;
 
 import java.io.Serializable;
-import java.net.Socket;
-import java.util.ArrayList;
 
-public class Requisition  implements Serializable{
+public class Requisition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String name_client;
 	private String name_document;
 	private String document_descriprtion;
 	private Boolean wasAttended;
-	private ArrayList<Requisition> l;
 	
+	public Requisition(){
+		super();
+		this.name_client = null;
+		this.name_document = null;
+		this.document_descriprtion = null;
+		this.wasAttended = null;
+	}
 	
 	public Requisition(String name_client, String name_document, String document_descriprtion,
 			Boolean wasAttended) {
@@ -23,25 +27,13 @@ public class Requisition  implements Serializable{
 		this.wasAttended = wasAttended;
 	}
 
-
-	public Requisition(ArrayList<Requisition> l) {
-		this.l = l;
-	}
-
-
-	public void createRequisition(String req, Socket s){
+	public void createRequisition(String req){
 		String[] x = req.split(";");
 		name_client = x[0];
 		name_document = x[1];
 		document_descriprtion = x[2];
 		wasAttended = Boolean.getBoolean(x[3]);
-		addRequisition(this);
 	}
-	
-	public void addRequisition(Requisition reqServer){
-		l.add(reqServer);	
-	}
-
 
 	public String getName_client() {
 		return name_client;
@@ -60,10 +52,6 @@ public class Requisition  implements Serializable{
 
 	public Boolean getWasAttended() {
 		return wasAttended;
-	}
-
-	public ArrayList<Requisition> getL() {
-		return l;
 	}
 	
 }

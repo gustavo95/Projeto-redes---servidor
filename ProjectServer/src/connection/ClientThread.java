@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,8 +91,9 @@ public class ClientThread implements Runnable {
 		String clientSentence = inFromClient.readLine();
 		System.out.println(clientSentence);
 		
-		Requisition req = new Requisition(l);
-		req.createRequisition(clientSentence, connectionSocket);
+		Requisition req = new Requisition();
+		req.createRequisition(clientSentence);
+		l.add(req);
 		
 		outToClient.writeBytes(req.getName_client() + " sent\n");
 	}
@@ -133,6 +135,8 @@ public class ClientThread implements Runnable {
 				fos.flush();
 			}
 			
+		}catch (FileNotFoundException e){
+			System.out.println("O arquivo especificado não foi encontrado");
 		}catch (Exception e) {
 			e.printStackTrace();
 			
@@ -192,6 +196,8 @@ public class ClientThread implements Runnable {
 				os.flush();
 			}
 			
+		}catch (FileNotFoundException e){
+			System.out.println("O arquivo especificado não foi encontrado");
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally {		
