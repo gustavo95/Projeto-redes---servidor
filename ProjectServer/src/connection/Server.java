@@ -4,12 +4,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import requisitionManagement.Requisition;
+
 public class Server {
 
 	public static void main(String argv[]) throws Exception {
 
 		System.out.println("SERVIDOR INICIOU, ESPERANDO CONEXÃO NA PORTA 6789!");
-		ArrayList<RequisitionServer> list_of_requisitions  = new ArrayList<RequisitionServer>();
+		ArrayList<Requisition> list_of_requisitions  = new ArrayList<Requisition>();
 		@SuppressWarnings("resource")
 		ServerSocket welcomeSocket = new ServerSocket(6789);
 		ServerSocket dataSocket = new ServerSocket(6790);;

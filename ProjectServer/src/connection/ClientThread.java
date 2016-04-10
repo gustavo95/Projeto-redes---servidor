@@ -8,11 +8,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+
+import requisitionManagement.Requisition;
 
 public class ClientThread implements Runnable {
 
@@ -20,9 +23,9 @@ public class ClientThread implements Runnable {
 	private ServerSocket serverDataSocket;
 	private BufferedReader inFromClient;
 	private DataOutputStream outToClient;
-	public  ArrayList<RequisitionServer> l ;
+	public  ArrayList<Requisition> l ;
 
-	public ClientThread(Socket cs, ServerSocket sds, ArrayList<RequisitionServer> l) {
+	public ClientThread(Socket cs, ServerSocket sds, ArrayList<Requisition> l) {
 		this.connectionSocket = cs;
 		this.serverDataSocket = sds;
 		this.l = l;
@@ -46,14 +49,18 @@ public class ClientThread implements Runnable {
 					switch(clientSentence){
 						case "0 Exit":
 							isConnected = false;
+							connectionSocket.close();
 							break;
 						case "1 SendingRequisition":
 							receiveRequisition();
 							break;
-						case "2 SendFile":
+						case "2 AskList":
+							sendList() ;
+							break;
+						case "3 SendFile":
 							receiveFile();
 							break;
-						case "3 ReceiveFile":
+						case "4 ReceiveFile":
 							sendFile();
 							break;
 						default:
@@ -78,14 +85,23 @@ public class ClientThread implements Runnable {
 		}
 	}
 	
+	//Receber Requisição do cliente
 	public void receiveRequisition() throws IOException{
 		String clientSentence = inFromClient.readLine();
 		System.out.println(clientSentence);
 		
-		RequisitionServer req = new RequisitionServer(l);
+		Requisition req = new Requisition(l);
 		req.createRequisition(clientSentence, connectionSocket);
 		
 		outToClient.writeBytes(req.getName_client() + " sent\n");
+	}
+	
+	//Enviar lista de Requisições para o cliente
+	public void sendList() throws IOException{
+		ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
+		
+		out.writeObject(l);
+		out.flush();
 	}
 
 	//Receber arquivo enviado pelo cliente

@@ -1,20 +1,21 @@
-package connection;
+package requisitionManagement;
 
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class RequisitionServer {
+public class Requisition  implements Serializable{
 
-	
+	private static final long serialVersionUID = 1L;
 	private String name_client;
 	private String name_document;
 	private String document_descriprtion;
 	private Boolean wasAttended;
 	private Socket socket;
-	private ArrayList<RequisitionServer> l;
+	private ArrayList<Requisition> l;
 	
 	
-	public RequisitionServer(String name_client, String name_document, String document_descriprtion,
+	public Requisition(String name_client, String name_document, String document_descriprtion,
 			Boolean wasAttended, Socket socket) {
 		super();
 		this.name_client = name_client;
@@ -25,7 +26,7 @@ public class RequisitionServer {
 	}
 
 
-	public RequisitionServer(ArrayList<RequisitionServer> l) {
+	public Requisition(ArrayList<Requisition> l) {
 		this.l = l;
 	}
 
@@ -39,7 +40,7 @@ public class RequisitionServer {
 		addRequisition(this);
 	}
 	
-	public void addRequisition(RequisitionServer reqServer){
+	public void addRequisition(Requisition reqServer){
 		l.add(reqServer);	
 	}
 
@@ -69,7 +70,7 @@ public class RequisitionServer {
 	}
 
 
-	public ArrayList<RequisitionServer> getL() {
+	public ArrayList<Requisition> getL() {
 		return l;
 	}
 	
