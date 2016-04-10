@@ -4,6 +4,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import requisitionManagement.Requisition;
+
 public class Server {
 
 	public static void main(String argv[]) throws Exception {
