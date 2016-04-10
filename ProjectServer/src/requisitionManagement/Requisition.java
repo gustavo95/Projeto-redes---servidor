@@ -11,18 +11,16 @@ public class Requisition  implements Serializable{
 	private String name_document;
 	private String document_descriprtion;
 	private Boolean wasAttended;
-	private Socket socket;
 	private ArrayList<Requisition> l;
 	
 	
 	public Requisition(String name_client, String name_document, String document_descriprtion,
-			Boolean wasAttended, Socket socket) {
+			Boolean wasAttended) {
 		super();
 		this.name_client = name_client;
 		this.name_document = name_document;
 		this.document_descriprtion = document_descriprtion;
 		this.wasAttended = wasAttended;
-		this.socket = socket;
 	}
 
 
@@ -63,12 +61,6 @@ public class Requisition  implements Serializable{
 	public Boolean getWasAttended() {
 		return wasAttended;
 	}
-
-
-	public Socket getSocket() {
-		return socket;
-	}
-
 
 	public ArrayList<Requisition> getL() {
 		return l;
