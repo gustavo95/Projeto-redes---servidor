@@ -2,41 +2,35 @@ package requisitionManagement;
 
 import java.io.Serializable;
 
+import connection.User;
+
 public class Requisition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private String name_client;
+	private User user;
 	private String name_document;
 	private String document_descriprtion;
 	private Boolean wasAttended;
 	
 	public Requisition(){
 		super();
-		this.name_client = null;
 		this.name_document = null;
 		this.document_descriprtion = null;
 		this.wasAttended = null;
+		this.user = null;
 	}
 	
-	public Requisition(String name_client, String name_document, String document_descriprtion,
+	public Requisition(User user, String name_document, String document_descriprtion,
 			Boolean wasAttended) {
 		super();
-		this.name_client = name_client;
+		this.user = user;
 		this.name_document = name_document;
 		this.document_descriprtion = document_descriprtion;
 		this.wasAttended = wasAttended;
 	}
-
-	public void createRequisition(String req){
-		String[] x = req.split(";");
-		name_client = x[0];
-		name_document = x[1];
-		document_descriprtion = x[2];
-		wasAttended = Boolean.getBoolean(x[3]);
-	}
-
-	public String getName_client() {
-		return name_client;
+	
+	public User getUser() {
+		return user;
 	}
 
 

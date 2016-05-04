@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -24,12 +25,15 @@ public class ClientThread implements Runnable {
 	private ServerSocket serverDataSocket;
 	private BufferedReader inFromClient;
 	private DataOutputStream outToClient;
-	public  ArrayList<Requisition> l ;
+	private  ArrayList<Requisition> listRequisitions;
+	private ArrayList<User> listUsers;
+	private User user;
 
-	public ClientThread(Socket cs, ServerSocket sds, ArrayList<Requisition> l) {
+	public ClientThread(Socket cs, ServerSocket sds, ArrayList<Requisition> listRequisitions, ArrayList<User> listUsers) {
 		this.connectionSocket = cs;
 		this.serverDataSocket = sds;
-		this.l = l;
+		this.listRequisitions = listRequisitions;
+		this.listUsers = listUsers;
 	}
 
 	public void run() {
@@ -64,6 +68,12 @@ public class ClientThread implements Runnable {
 						case "4 ReceiveFile":
 							sendFile();
 							break;
+						case "5 CreateUser":
+							createUser();						
+							break;
+						case "6 Login":
+							login();
+							break;
 						default:
 							System.out.println("outra coisa: " + clientSentence);
 							break;
@@ -86,23 +96,47 @@ public class ClientThread implements Runnable {
 		}
 	}
 	
+	//Realizar login de um usuario
+	public void login() throws IOException, ClassNotFoundException{
+		ObjectInputStream in =   new ObjectInputStream(connectionSocket.getInputStream());
+		user = (User)in.readObject();
+		if (user.checkLogin(listUsers, user)){
+
+			outToClient.writeBytes("Login Realizado \n");
+		}
+		else{
+			outToClient.writeBytes("Dados incorretos\n");
+		}
+	}
+	
+	//Criar novo usuario
+	public void createUser() throws IOException, ClassNotFoundException{
+		ObjectInputStream in =   new ObjectInputStream(connectionSocket.getInputStream());
+		User user = (User)in.readObject();
+		if (!user.checkLogin(listUsers, user)){
+			listUsers.add(user);
+			outToClient.writeBytes("Usuário " +user.getName()+" criado.\n");
+		}
+		else{
+			outToClient.writeBytes("Usuario já existe\n");
+		}
+	}
+	
 	//Receber Requisição do cliente
-	public void receiveRequisition() throws IOException{
-		String clientSentence = inFromClient.readLine();
-		System.out.println(clientSentence);
-		
-		Requisition req = new Requisition();
-		req.createRequisition(clientSentence);
-		l.add(req);
-		
-		outToClient.writeBytes(req.getName_client() + " sent\n");
+	public void receiveRequisition() throws IOException, ClassNotFoundException{
+				ObjectInputStream in =  new ObjectInputStream(connectionSocket.getInputStream());
+				Requisition req = (Requisition) in.readObject();
+
+				listRequisitions.add(req);
+
+				outToClient.writeBytes( " sent\n");
 	}
 	
 	//Enviar lista de Requisições para o cliente
 	public void sendList() throws IOException{
 		ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
 		
-		out.writeObject(l);
+		out.writeObject(listRequisitions);
 		out.flush();
 	}
 
