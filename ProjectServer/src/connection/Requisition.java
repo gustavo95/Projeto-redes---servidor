@@ -1,8 +1,6 @@
-package requisitionManagement;
+package connection;
 
 import java.io.Serializable;
-
-import connection.User;
 
 public class Requisition implements Serializable{
 

@@ -17,8 +17,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-import requisitionManagement.Requisition;
-
 public class ClientThread implements Runnable {
 
 	private Socket connectionSocket;
@@ -49,34 +47,34 @@ public class ClientThread implements Runnable {
 			int i = 1;
 			while(isConnected){
 				clientSentence = inFromClient.readLine();
-				
+
 				if(clientSentence != null){
 					switch(clientSentence){
-						case "0 Exit":
-							isConnected = false;
-							connectionSocket.close();
-							break;
-						case "1 SendingRequisition":
-							receiveRequisition();
-							break;
-						case "2 AskList":
-							sendList() ;
-							break;
-						case "3 SendFile":
-							receiveFile();
-							break;
-						case "4 ReceiveFile":
-							sendFile();
-							break;
-						case "5 CreateUser":
-							createUser();						
-							break;
-						case "6 Login":
-							login();
-							break;
-						default:
-							System.out.println("outra coisa: " + clientSentence);
-							break;
+					case "0 Exit":
+						isConnected = false;
+						connectionSocket.close();
+						break;
+					case "1 SendingRequisition":
+						receiveRequisition();
+						break;
+					case "2 AskList":
+						sendList() ;
+						break;
+					case "3 SendFile":
+						receiveFile();
+						break;
+					case "4 ReceiveFile":
+						sendFile();
+						break;
+					case "5 CreateUser":
+						createUser();						
+						break;
+					case "6 Login":
+						login();
+						break;
+					default:
+						System.out.println("outra coisa: " + clientSentence);
+						break;
 					}
 				}else{
 					System.out.println("IS NULL");
@@ -88,54 +86,52 @@ public class ClientThread implements Runnable {
 				i++;
 				System.out.println(i);
 			}
-			
+
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//Realizar login de um usuario
 	public void login() throws IOException, ClassNotFoundException{
 		ObjectInputStream in =   new ObjectInputStream(connectionSocket.getInputStream());
 		user = (User)in.readObject();
 		if (user.checkLogin(listUsers, user)){
 
-			outToClient.writeBytes("Login Realizado \n");
+			outToClient.writeBytes("Ok\n");
 		}
 		else{
-			outToClient.writeBytes("Dados incorretos\n");
+			outToClient.writeBytes("NotOk\n");
 		}
 	}
-	
+
 	//Criar novo usuario
 	public void createUser() throws IOException, ClassNotFoundException{
 		ObjectInputStream in =   new ObjectInputStream(connectionSocket.getInputStream());
 		User user = (User)in.readObject();
-		if (!user.checkLogin(listUsers, user)){
+		if (!user.checkUser(listUsers, user)){
 			listUsers.add(user);
-			outToClient.writeBytes("Usuário " +user.getName()+" criado.\n");
+			outToClient.writeBytes("Ok\n");
 		}
 		else{
-			outToClient.writeBytes("Usuario já existe\n");
+			outToClient.writeBytes("NotOk\n");
 		}
 	}
-	
+
 	//Receber Requisição do cliente
 	public void receiveRequisition() throws IOException, ClassNotFoundException{
-				ObjectInputStream in =  new ObjectInputStream(connectionSocket.getInputStream());
-				Requisition req = (Requisition) in.readObject();
-
-				listRequisitions.add(req);
-
-				outToClient.writeBytes( " sent\n");
+		
+		ObjectInputStream in =  new ObjectInputStream(connectionSocket.getInputStream());
+		Requisition req = (Requisition) in.readObject();
+		listRequisitions.add(req);
+		outToClient.writeBytes("Ok\n");
 	}
-	
+
 	//Enviar lista de Requisições para o cliente
 	public void sendList() throws IOException{
 		ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
-		
 		out.writeObject(listRequisitions);
 		out.flush();
 	}
@@ -148,12 +144,12 @@ public class ClientThread implements Runnable {
 		String fileName = null;
 
 		try{
-			
+
 			fileName = inFromClient.readLine();
-			
+
 			dataSocket = serverDataSocket.accept();
 			System.out.println("conectado na porta 6790");
-			
+
 			is = dataSocket.getInputStream();
 
 			// Cria arquivo local no servidor
@@ -168,12 +164,12 @@ public class ClientThread implements Runnable {
 				fos.write(cbuffer, 0, bytesRead);
 				fos.flush();
 			}
-			
+
 		}catch (FileNotFoundException e){
 			System.out.println("O arquivo especificado não foi encontrado");
 		}catch (Exception e) {
 			e.printStackTrace();
-			
+
 		} finally {
 			if (dataSocket != null) {
 				try {
@@ -199,7 +195,7 @@ public class ClientThread implements Runnable {
 		}
 		outToClient.writeBytes(fileName + " sent\n");
 	}
-	
+
 	//Enviar arquivo do servidor para o cliente
 	public void sendFile() throws IOException{
 		Socket dataSocket = null;
@@ -208,9 +204,9 @@ public class ClientThread implements Runnable {
 		File file = null;
 
 		try{
-			
+
 			String fileLocation = inFromClient.readLine();
-			
+
 			dataSocket = serverDataSocket.accept();
 
 			// Criando tamanho de leitura
@@ -229,7 +225,7 @@ public class ClientThread implements Runnable {
 				os.write(cbuffer, 0, bytesRead);
 				os.flush();
 			}
-			
+
 		}catch (FileNotFoundException e){
 			System.out.println("O arquivo especificado não foi encontrado");
 		}catch (Exception e) {
@@ -262,5 +258,5 @@ public class ClientThread implements Runnable {
 			file.delete();
 		}
 	}
-	
+
 }
